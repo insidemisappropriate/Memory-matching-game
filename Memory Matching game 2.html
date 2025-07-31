@@ -1,0 +1,79 @@
+<!-- filepath: /home/fedora/VSC/Memory Matching/Memory Matching game 2.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Memory Matching Game</title>
+  <style>
+    body { font-family: sans-serif; background: #222; color: #fff; text-align: center; }
+    #board { display: grid; grid-template-columns: repeat(6, 60px); gap: 10px; justify-content: center; margin-top: 30px; }
+    .card {
+      width: 60px; height: 60px; background: #444; font-size: 1.5em;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border-radius: 8px; user-select: none;
+    }
+    .card.flipped { background: #fff; color: #222; }
+    .card.matched { background: #2ecc40; color: #fff; cursor: default; }
+    #message { margin-top: 20px; font-size: 1.3em; }
+  </style>
+</head>
+<body>
+  <h1>Memory Matching Game</h1>
+  <div id="board"></div>
+  <div id="message"></div>
+  <script>
+    const boardElem = document.getElementById('board');
+    const messageElem = document.getElementById('message');
+    const size = 6;
+    const totalPairs = (size * size) / 2;
+    let values = [];
+    let cards = [];
+    let flipped = [];
+    let matchedCount = 0;
+
+    for (let i = 0; i < totalPairs; i++) {
+      values.push(String.fromCharCode(65 + i));
+      values.push(String.fromCharCode(65 + i));
+    }
+    values = values.sort(() => Math.random() - 0.5);
+
+    for (let i = 0; i < size * size; i++) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.value = values[i];
+      card.dataset.index = i;
+      card.textContent = '';
+      card.addEventListener('click', () => flipCard(card));
+      boardElem.appendChild(card);
+      cards.push(card);
+    }
+
+    function flipCard(card) {
+      if (card.classList.contains('flipped') || card.classList.contains('matched') || flipped.length === 2) return;
+      card.classList.add('flipped');
+      card.textContent = card.dataset.value;
+      flipped.push(card);
+
+      if (flipped.length === 2) {
+        if (flipped[0].dataset.value === flipped[1].dataset.value) {
+          flipped[0].classList.add('matched');
+          flipped[1].classList.add('matched');
+          matchedCount++;
+          flipped = [];
+          if (matchedCount === totalPairs) {
+            messageElem.textContent = 'You Win!';
+          }
+        } else {
+          setTimeout(() => {
+            flipped[0].classList.remove('flipped');
+            flipped[1].classList.remove('flipped');
+            flipped[0].textContent = '';
+            flipped[1].textContent = '';
+            flipped = [];
+          }, 1000);
+        }
+      }
+    }
+  </script>
+</body>
+</html><a href="file:///home/fedora/VSC/Tic-tac-toe%20website/tic-tac-toe.html">click here to play Tic-tac-toe</a>
+<a href="../guess the number game website/guess the number website.html">click here to Play Guess the Number Game</a>
